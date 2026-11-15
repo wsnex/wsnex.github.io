@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WSNex — Software House | POS, School, ISP & Automation Software</title>
+<meta name="description" content="WSNex builds practical, self-hosted software: FoodDesk Pro restaurant POS, School Management, WhatsApp Bulk Sender, NexGrab downloader, Linkora messenger and ISP/OLT management tools. Based in Gujranwala, Pakistan.">
+<meta name="theme-color" content="#05070f">
+<meta property="og:title" content="WSNex — Software House">
+<meta property="og:description" content="Practical software with a futuristic touch. POS, school, ISP and automation tools.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2300e5ff'/%3E%3Cstop offset='1' stop-color='%237c4dff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%2305070f'/%3E%3Cpath d='M12 18l8 28 6-18 6 18 6-18 6 18 8-28' fill='none' stroke='url(%23g)' stroke-width='5' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#05070f; --bg2:#0a0e1c; --card:rgba(255,255,255,.035); --line:rgba(255,255,255,.08);
+  --text:#e8ecf7; --muted:#8a93ad; --cyan:#00e5ff; --violet:#7c4dff; --pink:#ff4ecd; --green:#25d366;
+  --grad:linear-gradient(135deg,var(--cyan),var(--violet));
+  --r:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;line-height:1.15;letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1180px,92%);margin:auto}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* background */
+.bg-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+   radial-gradient(600px 400px at 15% 10%,rgba(0,229,255,.12),transparent 60%),
+   radial-gradient(700px 500px at 90% 30%,rgba(124,77,255,.14),transparent 60%),
+   radial-gradient(500px 400px at 50% 100%,rgba(255,78,205,.07),transparent 60%);}
+.bg-grid{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.35;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:60px 60px;mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 75%)}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:.3s}
+nav.scrolled{background:rgba(5,7,15,.78);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:1.35rem}
+.logo svg{width:34px;height:34px}
+.nav-links{display:flex;gap:30px;font-size:.93rem;color:var(--muted)}
+.nav-links a:hover{color:var(--text)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;font-weight:600;font-size:.93rem;border:0;cursor:pointer;transition:.25s;font-family:inherit}
+.btn-p{background:var(--grad);color:#fff;box-shadow:0 8px 30px -8px rgba(0,229,255,.5)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 36px -8px rgba(124,77,255,.7)}
+.btn-g{background:var(--card);border:1px solid var(--line);color:var(--text)}
+.btn-g:hover{border-color:rgba(0,229,255,.5)}
+.btn-wa{background:var(--green);color:#04210f}
+.btn-wa:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.menu-btn{display:none;background:none;border:0;color:var(--text);font-size:1.6rem;cursor:pointer}
+
+/* hero */
+.hero{padding:170px 0 110px;text-align:center;position:relative}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:99px;border:1px solid var(--line);background:var(--card);font-size:.82rem;color:var(--muted);margin-bottom:28px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.4}}
+.hero h1{font-size:clamp(2.6rem,6.5vw,5rem);font-weight:700;max-width:900px;margin:auto}
+.hero p{max-width:620px;margin:24px auto 38px;color:var(--muted);font-size:1.12rem}
+.hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.typed{border-right:3px solid var(--cyan);padding-right:4px;animation:blink .8s infinite}
+@keyframes blink{50%{border-color:transparent}}
+.hero{text-align:left;padding-top:140px;overflow:hidden}
+.hero h1{font-size:clamp(2.4rem,5vw,4.2rem)}
+@media(min-width:901px){.hero h1{min-height:2.4em}}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:30px;align-items:center}
+.hero h1{margin:0}.hero p{margin:24px 0 36px}
+.hero-cta{justify-content:flex-start}
+.robot-wrap{position:relative;height:460px;display:grid;place-items:center}
+.robot{width:280px;height:auto;animation:hover 4s ease-in-out infinite;filter:drop-shadow(0 20px 40px rgba(0,229,255,.25));position:relative;z-index:2}
+@keyframes hover{50%{transform:translateY(-14px)}}
+.robot .shadow{animation:shad 4s ease-in-out infinite;transform-origin:160px 408px}
+@keyframes shad{50%{transform:scaleX(.8);opacity:.5}}
+.robot .eyes{animation:blinkEye 5s infinite;transform-origin:160px 121px}
+@keyframes blinkEye{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.robot .ant{animation:pulse 1.4s infinite}
+.robot .wave{animation:wave 2.4s ease-in-out infinite;transform-origin:249px 208px}
+@keyframes wave{0%,100%{transform:rotate(0)}20%{transform:rotate(-38deg)}35%{transform:rotate(-22deg)}50%{transform:rotate(-38deg)}65%{transform:rotate(0)}}
+.robot .pulse-line{stroke-dasharray:160;animation:draw 2s linear infinite}
+@keyframes draw{from{stroke-dashoffset:160}to{stroke-dashoffset:-160}}
+.orbit{position:absolute;border-radius:50%;border:1px dashed rgba(0,229,255,.25);animation:spin 30s linear infinite}
+.o1{width:380px;height:380px}.o2{width:300px;height:300px;border-color:rgba(124,77,255,.3);animation-direction:reverse;animation-duration:22s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bubble-hi{position:absolute;top:18px;right:0;z-index:3;padding:12px 16px;border-radius:16px 16px 16px 4px;background:rgba(12,17,34,.9);border:1px solid rgba(0,229,255,.35);font-size:.88rem;font-weight:600;animation:hover 5s ease-in-out infinite;box-shadow:0 10px 30px -10px rgba(0,229,255,.4)}
+.bubble-hi span{color:var(--muted);font-weight:400;font-size:.8rem}
+.float-card{position:absolute;z-index:3;padding:9px 14px;border-radius:12px;background:rgba(12,17,34,.85);border:1px solid var(--line);font-size:.8rem;backdrop-filter:blur(8px);animation:hover 6s ease-in-out infinite}
+.fc1{left:0;top:150px;animation-delay:-1s}.fc2{right:-10px;bottom:120px;animation-delay:-3s}.fc3{left:20px;bottom:40px;animation-delay:-2s}
+.tech{margin-top:50px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.tech span{padding:8px 16px;border:1px solid var(--line);border-radius:10px;font-size:.82rem;color:var(--muted);background:rgba(255,255,255,.02)}
+
+/* sections */
+section{padding:100px 0}
+.s-head{text-align:center;max-width:640px;margin:0 auto 60px}
+.tag{font-family:'JetBrains Mono';font-size:.78rem;color:var(--cyan);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;display:block}
+.s-head h2{font-size:clamp(2rem,4vw,2.9rem)}
+.s-head p{color:var(--muted);margin-top:14px}
+
+/* services */
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.svc{padding:30px;border-radius:var(--r);background:var(--card);border:1px solid var(--line);transition:.3s;position:relative;overflow:hidden}
+.svc::before{content:"";position:absolute;inset:0;background:var(--grad);opacity:0;transition:.3s;z-index:-1}
+.svc:hover{transform:translateY(-6px);border-color:rgba(0,229,255,.35)}
+.svc .ic{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(0,229,255,.15),rgba(124,77,255,.15));border:1px solid rgba(0,229,255,.25);margin-bottom:20px;font-size:1.4rem}
+.svc h3{font-size:1.18rem;margin-bottom:8px}
+.svc p{color:var(--muted);font-size:.93rem}
+
+/* projects */
+.proj{display:grid;grid-template-columns:1fr 1.1fr;gap:60px;align-items:center;margin-bottom:110px}
+.proj:nth-child(even) .proj-media{order:2}
+.proj-num{font-family:'JetBrains Mono';color:var(--muted);font-size:.85rem}
+.proj h3{font-size:clamp(1.8rem,3vw,2.4rem);margin:10px 0 6px}
+.proj .sub{color:var(--cyan);font-weight:500;margin-bottom:16px}
+.proj p.d{color:var(--muted);margin-bottom:22px}
+.feat{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin-bottom:26px}
+.feat li{font-size:.9rem;display:flex;gap:9px;align-items:flex-start}
+.feat li::before{content:"";flex:none;width:16px;height:16px;margin-top:3px;border-radius:5px;background:var(--grad);mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3 3 7-7' stroke='black' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.chip{font-size:.75rem;padding:5px 11px;border-radius:8px;background:rgba(124,77,255,.12);border:1px solid rgba(124,77,255,.3);color:#c5b5ff}
+.chip.c{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.28);color:#8ff3ff}
+.status{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;padding:5px 12px;border-radius:99px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.3);color:#7df0a8;margin-left:10px;vertical-align:middle;font-family:Inter;font-weight:500;letter-spacing:0}
+.status.dev{background:rgba(255,190,60,.1);border-color:rgba(255,190,60,.3);color:#ffd27a}
+
+/* mockup frames */
+.proj-media{position:relative}
+.proj-media::before{content:"";position:absolute;inset:8% 6%;background:var(--grad);filter:blur(70px);opacity:.28;border-radius:40px;z-index:-1}
+.win{border-radius:16px;background:#0c1122;border:1px solid rgba(255,255,255,.1);box-shadow:0 40px 80px -30px rgba(0,0,0,.8);overflow:hidden;transform:perspective(1400px) rotateY(-5deg) rotateX(3deg);transition:.5s}
+.proj:nth-child(even) .win{transform:perspective(1400px) rotateY(5deg) rotateX(3deg)}
+.proj:hover .win{transform:none}
+.win-bar{height:34px;display:flex;align-items:center;gap:7px;padding:0 14px;background:#0f1529;border-bottom:1px solid rgba(255,255,255,.06)}
+.win-bar i{width:11px;height:11px;border-radius:50%;background:#ff5f57}.win-bar i:nth-child(2){background:#febc2e}.win-bar i:nth-child(3){background:#28c840}
+.win-bar span{margin-left:12px;font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono'}
+.win-body{padding:16px;min-height:300px;font-size:.72rem}
+.mrow{display:flex;gap:10px}.mcol{display:flex;flex-direction:column;gap:10px}
+.box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:10px}
+.bar{height:7px;border-radius:5px;background:rgba(255,255,255,.1)}
+.lbl{color:var(--muted);font-size:.65rem}
+.big{font-family:'Space Grotesk';font-size:1.15rem;font-weight:700}
+.side{width:110px;flex:none;background:rgba(0,0,0,.25);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.side div{padding:6px 8px;border-radius:7px;color:var(--muted)}
+.side .on{background:var(--grad);color:#fff}
+/* phone */
+.phone{width:240px;margin:auto;border-radius:34px;background:#0c1122;border:6px solid #1a2140;padding:14px 12px;box-shadow:0 40px 80px -30px rgba(0,0,0,.8);min-height:440px;font-size:.72rem}
+.notch{width:70px;height:16px;background:#1a2140;border-radius:0 0 12px 12px;margin:-14px auto 12px}
+.bubble{max-width:78%;padding:7px 10px;border-radius:12px;margin-bottom:8px}
+.bubble.in{background:rgba(255,255,255,.07);border-bottom-left-radius:3px}
+.bubble.out{background:linear-gradient(135deg,rgba(0,229,255,.25),rgba(124,77,255,.35));margin-left:auto;border-bottom-right-radius:3px}
+.ticks{color:var(--cyan);font-size:.6rem;float:right;margin-left:6px}
+.dual{display:flex;gap:18px;align-items:flex-end;justify-content:center}
+
+/* process */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:s}
+.step{padding:28px;border-radius:var(--r);border:1px solid var(--line);background:var(--card);position:relative}
+.step::before{counter-increment:s;content:"0" counter(s);font-family:'JetBrains Mono';font-size:2.4rem;font-weight:500;background:var(--grad);-webkit-background-clip:text;color:transparent;display:block;margin-bottom:10px}
+.step h4{margin-bottom:6px}.step p{color:var(--muted);font-size:.9rem}
+
+/* why */
+.why{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.why div{padding:26px;border-radius:var(--r);border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.04),transparent)}
+.why h4{font-size:1.05rem;margin-bottom:6px}.why p{color:var(--muted);font-size:.9rem}
+
+/* contact */
+.contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:40px}
+.c-info{display:flex;flex-direction:column;gap:16px}
+.c-card{display:flex;gap:16px;align-items:center;padding:20px;border-radius:var(--r);border:1px solid var(--line);background:var(--card);transition:.25s}
+.c-card:hover{border-color:rgba(0,229,255,.4);transform:translateX(4px)}
+.c-card .ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;flex:none}
+.c-card small{color:var(--muted);display:block;font-size:.8rem}
+.c-card b{font-family:'Space Grotesk';font-size:1.05rem;word-break:break-all}
+form{padding:34px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));backdrop-filter:blur(10px)}
+form h3{font-size:1.5rem;margin-bottom:4px}
+form .note{color:var(--muted);font-size:.88rem;margin-bottom:22px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:13px 15px;border-radius:11px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:var(--text);font-family:inherit;font-size:.93rem;transition:.2s}
+.field select option{background:var(--bg2)}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:0;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,229,255,.12)}
+.f-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.f-btns .btn{justify-content:center;padding:14px}
+.f-err{color:#ff7a9c;font-size:.85rem;margin-top:10px;min-height:1.2em}
+
+.custom-box{padding:60px 48px;border-radius:28px;border:1px solid rgba(0,229,255,.2);background:radial-gradient(600px 300px at 0% 0%,rgba(0,229,255,.08),transparent),radial-gradient(600px 300px at 100% 100%,rgba(124,77,255,.12),transparent),rgba(255,255,255,.02)}
+.custom-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.cg{padding:20px;border-radius:16px;border:1px solid var(--line);background:rgba(5,7,15,.5);display:flex;flex-direction:column;gap:4px;transition:.25s}
+.cg:hover{border-color:rgba(0,229,255,.4);transform:translateY(-4px)}
+.cg .ic{font-size:1.5rem;margin-bottom:6px}.cg b{font-family:'Space Grotesk'}.cg span{color:var(--muted);font-size:.85rem}
+footer{border-top:1px solid var(--line);padding:40px 0;color:var(--muted);font-size:.88rem}
+.f-in{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+
+.wa-float{position:fixed;right:22px;bottom:22px;z-index:60;width:58px;height:58px;border-radius:50%;background:var(--green);display:grid;place-items:center;box-shadow:0 10px 30px -5px rgba(37,211,102,.6);transition:.25s}
+.wa-float:hover{transform:scale(1.08)}
+.wa-float svg{width:30px;height:30px;fill:#fff}
+
+.reveal{opacity:0;transform:translateY(40px);transition:1s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:900px){
+  .nav-links{display:none;position:absolute;top:72px;left:0;right:0;flex-direction:column;gap:0;background:rgba(5,7,15,.97);border-bottom:1px solid var(--line)}
+  .nav-links.open{display:flex}.nav-links a{padding:16px 6%}
+  .menu-btn{display:block}.nav-cta{display:none}
+  .proj,.contact{grid-template-columns:1fr;gap:36px}
+  .proj:nth-child(even) .proj-media{order:0}
+  .steps{grid-template-columns:1fr 1fr}.why{grid-template-columns:1fr}
+  .win,.proj:nth-child(even) .win{transform:none}
+  .hero{text-align:center}.hero-grid{grid-template-columns:1fr}
+  .hero-cta{justify-content:center}.hero p{margin:24px auto 36px}
+  .robot-wrap{height:400px}.robot{width:230px}
+  .o1{width:320px;height:320px}.o2{width:250px;height:250px}
+  .custom-grid{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:560px){
+  .bubble-hi{right:4px;top:0}.fc1{left:0}.fc2{right:0}
+  .custom-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:560px){
+  .feat,.f-row,.f-btns,.steps{grid-template-columns:1fr}
+  .hero{padding:140px 0 80px}
+  .side{display:none}
+  .dual .phone:last-child{display:none}
+}
+</style>
+</head>
+<body>
+<div class="bg-fx"></div><div class="bg-grid"></div>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a href="#top" class="logo">
+      <svg viewBox="0 0 64 64"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00e5ff"/><stop offset="1" stop-color="#7c4dff"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="#0c1122" stroke="rgba(255,255,255,.12)"/><path d="M12 18l8 28 6-18 6 18 6-18 6 18 8-28" fill="none" stroke="url(#lg)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      WS<span class="grad">Nex</span>
+    </a>
+    <div class="nav-links" id="links">
+      <a href="#services">Services</a>
+      <a href="#projects">Projects</a>
+      <a href="#custom">Custom POS</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#contact" class="btn btn-p nav-cta">Start a Project</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+   <div class="hero-grid">
+    <div class="hero-txt">
+    <div class="pill"><span class="dot"></span> Gujranwala, Pakistan · Taking new projects</div>
+    <h1>Software that <span class="grad typed" id="typed">runs your business</span></h1>
+    <p>Hi, we're WSNex. We make simple, reliable software for real businesses — restaurants, schools, shops and internet providers. Tell us how you work, and we'll build the tool around it.</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-p">See What We've Built →</a>
+      <a href="https://wa.me/923396258977?text=Assalam-o-Alaikum%20WSNex%2C%20I%20want%20to%20discuss%20a%20project." target="_blank" rel="noopener" class="btn btn-g">💬 Let's Talk on WhatsApp</a>
+    </div>
+    </div>
+    <div class="robot-wrap" aria-hidden="true">
+      <div class="orbit o1"></div><div class="orbit o2"></div>
+      <svg class="robot" viewBox="0 0 320 420">
+        <defs>
+          <linearGradient id="rb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b2446"/><stop offset="1" stop-color="#0b1022"/></linearGradient>
+          <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00e5ff"/><stop offset="1" stop-color="#7c4dff"/></linearGradient>
+          <radialGradient id="glow"><stop offset="0" stop-color="#00e5ff" stop-opacity=".9"/><stop offset="1" stop-color="#00e5ff" stop-opacity="0"/></radialGradient>
+        </defs>
+        <!-- antenna -->
+        <line x1="160" y1="40" x2="160" y2="70" stroke="url(#rg)" stroke-width="4" stroke-linecap="round"/>
+        <circle class="ant" cx="160" cy="34" r="8" fill="#00e5ff"/>
+        <!-- head -->
+        <rect x="95" y="70" width="130" height="108" rx="40" fill="url(#rb)" stroke="url(#rg)" stroke-width="3"/>
+        <rect x="112" y="96" width="96" height="50" rx="22" fill="#05070f" stroke="rgba(0,229,255,.35)"/>
+        <g class="eyes">
+          <ellipse cx="140" cy="121" rx="10" ry="10" fill="#00e5ff"/>
+          <ellipse cx="180" cy="121" rx="10" ry="10" fill="#00e5ff"/>
+          <circle cx="140" cy="121" r="22" fill="url(#glow)" opacity=".5"/>
+          <circle cx="180" cy="121" r="22" fill="url(#glow)" opacity=".5"/>
+        </g>
+        <path d="M145 160 Q160 168 175 160" stroke="#00e5ff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>
+        <rect x="84" y="108" width="12" height="34" rx="6" fill="url(#rg)"/>
+        <rect x="224" y="108" width="12" height="34" rx="6" fill="url(#rg)"/>
+        <!-- neck -->
+        <rect x="145" y="178" width="30" height="16" rx="5" fill="#141b36"/>
+        <!-- body -->
+        <rect x="82" y="192" width="156" height="150" rx="36" fill="url(#rb)" stroke="url(#rg)" stroke-width="3"/>
+        <rect x="112" y="222" width="96" height="62" rx="14" fill="#05070f" stroke="rgba(124,77,255,.4)"/>
+        <polyline class="pulse-line" points="120,254 140,254 148,238 158,270 168,246 176,254 200,254" fill="none" stroke="#00e5ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="130" cy="310" r="7" fill="#25d366"/><circle cx="160" cy="310" r="7" fill="#7c4dff"/><circle cx="190" cy="310" r="7" fill="#ff4ecd"/>
+        <!-- left arm (waving) -->
+        <g class="wave">
+          <rect x="236" y="204" width="26" height="78" rx="13" fill="url(#rb)" stroke="url(#rg)" stroke-width="3"/>
+          <circle cx="249" cy="290" r="16" fill="#141b36" stroke="url(#rg)" stroke-width="3"/>
+        </g>
+        <!-- right arm -->
+        <rect x="58" y="210" width="26" height="92" rx="13" fill="url(#rb)" stroke="url(#rg)" stroke-width="3"/>
+        <circle cx="71" cy="310" r="16" fill="#141b36" stroke="url(#rg)" stroke-width="3"/>
+        <!-- legs -->
+        <rect x="112" y="340" width="32" height="50" rx="12" fill="#141b36" stroke="url(#rg)" stroke-width="2"/>
+        <rect x="176" y="340" width="32" height="50" rx="12" fill="#141b36" stroke="url(#rg)" stroke-width="2"/>
+        <ellipse class="shadow" cx="160" cy="408" rx="80" ry="8" fill="rgba(0,229,255,.25)"/>
+      </svg>
+      <div class="bubble-hi">Assalam-o-Alaikum! 👋<br><span>Kya banwana hai aaj?</span></div>
+      <div class="float-card fc1">🧾 POS ready</div>
+      <div class="float-card fc2">📡 ISP online</div>
+      <div class="float-card fc3">🏫 Fees synced ✓</div>
+    </div>
+   </div>
+    <div class="tech">
+      <span>🖥️ Windows</span><span>📱 Android</span><span>🌐 Web</span><span>⚡ Works Offline</span><span>🔐 Secure</span><span>🇵🇰 Urdu Support</span>
+    </div>
+  </div>
+</header>
+
+<section id="services">
+  <div class="wrap">
+    <div class="s-head reveal">
+      <span class="tag">// What we do</span>
+      <h2>Built for how <span class="grad">you</span> work</h2>
+      <p>Whether you run one shop or ten branches, we build tools your staff can pick up in a day — and that keep working even when the internet doesn't.</p>
+    </div>
+    <div class="svc-grid">
+      <div class="svc reveal"><div class="ic">🖥️</div><h3>Desktop Applications</h3><p>Apps that open straight from your desktop. Fast and light, even on older PCs.</p></div>
+      <div class="svc reveal"><div class="ic">🌐</div><h3>Web Applications</h3><p>Use it from your PC or your phone — on your own server or online, with proper logins and an admin panel.</p></div>
+      <div class="svc reveal"><div class="ic">📱</div><h3>Android Apps</h3><p>Clean, easy apps for your team or your customers, with updates delivered right inside the app.</p></div>
+      <div class="svc reveal"><div class="ic">📡</div><h3>Network & ISP Solutions</h3><p>We do OLT configuration ourselves — so our ISP tools are built by people who actually work in the field.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="s-head reveal">
+      <span class="tag">// Our Projects</span>
+      <h2>Things we've <span class="grad">built</span></h2>
+      <p>Real products, designed and coded by us. Want something like this for your business? Just ask.</p>
+    </div>
+
+    <div class="proj-list">
+
+      <!-- 1. FoodDesk Pro -->
+      <div class="proj reveal">
+        <div class="proj-media">
+          <div class="win">
+            <div class="win-bar"><i></i><i></i><i></i><span>FoodDesk Pro — POS</span></div>
+            <div class="win-body mrow">
+              <div class="side"><div class="on">🧾 POS</div><div>🍳 Kitchen</div><div>🛵 Delivery</div><div>📊 Reports</div><div>🏬 Branches</div></div>
+              <div class="mcol" style="flex:1">
+                <div class="mrow">
+                  <div class="box" style="flex:1"><div class="lbl">Today's Sales</div><div class="big grad">Rs 48,250</div></div>
+                  <div class="box" style="flex:1"><div class="lbl">Orders</div><div class="big">126</div></div>
+                </div>
+                <div class="mrow" style="flex-wrap:wrap">
+                  <div class="box" style="flex:1 1 30%;text-align:center">🍕<div>Pizza</div></div>
+                  <div class="box" style="flex:1 1 30%;text-align:center">🍔<div>Burger</div></div>
+                  <div class="box" style="flex:1 1 30%;text-align:center">🍟<div>Fries</div></div>
+                  <div class="box" style="flex:1 1 30%;text-align:center">🥤<div>Drinks</div></div>
+                  <div class="box" style="flex:1 1 30%;text-align:center">🌯<div>Wraps</div></div>
+                  <div class="box" style="flex:1 1 30%;text-align:center">🍰<div>Dessert</div></div>
+                </div>
+                <div class="box"><div class="mrow" style="justify-content:space-between"><span>Order #1042 · Delivery</span><span style="color:#ffd27a">● Pending</span></div></div>
+                <div class="box"><div class="mrow" style="justify-content:space-between"><span>Order #1041 · Dine-in</span><span style="color:#7df0a8">● Fulfilled</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="proj-num">01 / 06</span>
+          <h3>FoodDesk Pro</h3>
+          <div class="sub">A restaurant POS that keeps up with rush hour</div>
+          <p class="d">We built FoodDesk Pro after seeing how busy restaurant counters really are. Take an order, print the bill, send it to the kitchen and hand the rider his copy — all in a few taps. If the internet drops, nothing stops; it syncs on its own when it's back.</p>
+          <ul class="feat">
+            <li>Fast billing & receipt printing</li><li>Kitchen order status tracking</li>
+            <li>Rider copy for home delivery</li><li>Multi-branch management</li>
+            <li>Works offline, syncs online</li><li>Online ordering add-on</li>
+          </ul>
+          <div class="chips"><span class="chip c">Desktop</span><span class="chip c">Web</span><span class="chip c">Android (PWA)</span><span class="chip">Offline + Online</span></div>
+          <a href="#contact" class="btn btn-g" data-project="FoodDesk Pro">Request a Demo →</a>
+        </div>
+      </div>
+
+      <!-- 2. School Management -->
+      <div class="proj reveal">
+        <div class="proj-media">
+          <div class="win">
+            <div class="win-bar"><i></i><i></i><i></i><span>School Management System</span></div>
+            <div class="win-body mrow">
+              <div class="side"><div class="on">🏫 Dashboard</div><div>👨‍🎓 Students</div><div>📋 Attendance</div><div>💰 Fees</div><div>📝 Results</div></div>
+              <div class="mcol" style="flex:1">
+                <div class="mrow">
+                  <div class="box" style="flex:1"><div class="lbl">Students</div><div class="big">842</div></div>
+                  <div class="box" style="flex:1"><div class="lbl">Present Today</div><div class="big grad">96%</div></div>
+                  <div class="box" style="flex:1"><div class="lbl">Fee Collected</div><div class="big">78%</div></div>
+                </div>
+                <div class="box">
+                  <div class="lbl" style="margin-bottom:8px">Monthly Attendance</div>
+                  <div class="mrow" style="align-items:flex-end;height:90px;gap:7px">
+                    <div style="flex:1;height:70%;background:var(--grad);border-radius:4px"></div><div style="flex:1;height:85%;background:var(--grad);border-radius:4px"></div><div style="flex:1;height:60%;background:var(--grad);border-radius:4px"></div><div style="flex:1;height:92%;background:var(--grad);border-radius:4px"></div><div style="flex:1;height:78%;background:var(--grad);border-radius:4px"></div><div style="flex:1;height:88%;background:var(--grad);border-radius:4px"></div><div style="flex:1;height:95%;background:var(--grad);border-radius:4px"></div>
+                  </div>
+                </div>
+                <div class="box"><div class="mrow" style="justify-content:space-between"><span>Class 8-B · Fee Reminder</span><span style="color:var(--cyan)">Sent ✓</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="proj-num">02 / 06</span>
+          <h3>School Management</h3>
+          <div class="sub">Less paperwork, more teaching</div>
+          <p class="d">Attendance registers, fee slips and result cards eat up hours every week. This puts students, staff, fees and exams in one place — so the office team gets their evenings back and parents stay in the loop.</p>
+          <ul class="feat">
+            <li>Student & staff records</li><li>Daily attendance</li>
+            <li>Fee vouchers & tracking</li><li>Exams & result cards</li>
+            <li>Parent reminders</li><li>Reports & analytics</li>
+          </ul>
+          <div class="chips"><span class="chip c">Web</span><span class="chip c">Desktop</span><span class="chip">Admin Panel</span></div>
+          <a href="#contact" class="btn btn-g" data-project="School Management">Request a Demo →</a>
+        </div>
+      </div>
+
+      <!-- 3. WhatsApp Sender -->
+      <div class="proj reveal">
+        <div class="proj-media">
+          <div class="win">
+            <div class="win-bar"><i></i><i></i><i></i><span>WSNex Bulk Sender</span></div>
+            <div class="win-body mcol">
+              <div class="mrow">
+                <div class="box" style="flex:1"><div class="lbl">Wallet Credits</div><div class="big grad">4,860</div></div>
+                <div class="box" style="flex:1"><div class="lbl">Delivered</div><div class="big" style="color:#7df0a8">98.4%</div></div>
+                <div class="box" style="flex:1"><div class="lbl">Campaigns</div><div class="big">37</div></div>
+              </div>
+              <div class="mrow">
+                <div class="box" style="flex:1.2">
+                  <div class="lbl" style="margin-bottom:8px">New Campaign</div>
+                  <div class="mrow" style="gap:6px;margin-bottom:8px"><span class="chip c">WhatsApp</span><span class="chip">Email</span><span class="chip">OTP</span></div>
+                  <div class="box" style="background:rgba(37,211,102,.08);border-color:rgba(37,211,102,.25)">Assalam-o-Alaikum {name}! Your monthly fee is due on 10th. Thank you 🙏</div>
+                  <div class="mrow" style="margin-top:8px;justify-content:space-between"><span class="lbl">1,250 contacts · English / اردو</span><span style="background:var(--green);color:#04210f;padding:4px 10px;border-radius:6px;font-weight:600">Send ➤</span></div>
+                </div>
+                <div class="box" style="flex:.8">
+                  <div class="lbl" style="margin-bottom:8px">Live Progress</div>
+                  <div class="bar" style="margin-bottom:6px"><div style="width:72%;height:100%;background:var(--green);border-radius:5px"></div></div>
+                  <div class="lbl">900 / 1,250 sent</div>
+                  <div style="margin-top:10px" class="lbl">✓ Template check passed<br>✓ Quality rating: High</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="proj-num">03 / 06</span>
+          <h3>WhatsApp Bulk Sender</h3>
+          <div class="sub">Talk to all your customers at once</div>
+          <p class="d">Fee reminders, new offers, order updates — send them to hundreds of people on WhatsApp or email in one go. Write in Urdu or English, top up credit when you need it, and see exactly who got your message.</p>
+          <ul class="feat">
+            <li>Official API & automation modes</li><li>Bulk email option</li>
+            <li>Prepaid credit wallet</li><li>English & Urdu templates</li>
+            <li>OTP / verification API</li><li>Auto refund on failed sends</li>
+          </ul>
+          <div class="chips"><span class="chip c">Windows</span><span class="chip">Schools</span><span class="chip">Online Stores</span></div>
+          <a href="#contact" class="btn btn-g" data-project="WhatsApp Bulk Sender">Get Early Access →</a>
+        </div>
+      </div>
+
+      <!-- 4. NexGrab -->
+      <div class="proj reveal">
+        <div class="proj-media">
+          <div class="win">
+            <div class="win-bar"><i></i><i></i><i></i><span>NexGrab — Downloader</span></div>
+            <div class="win-body mcol">
+              <div class="box mrow" style="align-items:center;gap:8px;padding:12px"><span>🔗</span><span class="lbl" style="flex:1">https://youtube.com/watch?v=…</span><span style="background:var(--grad);padding:5px 12px;border-radius:7px;font-weight:600">Grab</span></div>
+              <div class="mrow">
+                <div class="box" style="flex:1;text-align:center"><div class="big">1080p</div><div class="lbl">MP4</div></div>
+                <div class="box" style="flex:1;text-align:center"><div class="big">4K</div><div class="lbl">MP4</div></div>
+                <div class="box" style="flex:1;text-align:center"><div class="big">320k</div><div class="lbl">MP3</div></div>
+              </div>
+              <div class="box"><div class="mrow" style="justify-content:space-between;margin-bottom:6px"><span>Travel_Vlog_4K.mp4</span><span style="color:var(--cyan)">82%</span></div><div class="bar"><div style="width:82%;height:100%;background:var(--grad);border-radius:5px"></div></div></div>
+              <div class="box"><div class="mrow" style="justify-content:space-between;margin-bottom:6px"><span>Podcast_Ep12.mp3</span><span style="color:#7df0a8">Done ✓</span></div><div class="bar"><div style="width:100%;height:100%;background:#25d366;border-radius:5px"></div></div></div>
+              <div class="box"><div class="mrow" style="justify-content:space-between;margin-bottom:6px"><span>Playlist (14 videos)</span><span class="lbl">Queued</span></div><div class="bar"></div></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="proj-num">04 / 06</span>
+          <h3>NexGrab Downloader</h3>
+          <div class="sub">Save any video, the easy way</div>
+          <p class="d">Paste a link, pick the quality, done. NexGrab saves videos in HD or 4K and music as MP3 — on your PC, your phone or straight from the browser.</p>
+          <ul class="feat">
+            <li>HD / 4K video downloads</li><li>MP3 audio extraction</li>
+            <li>Playlist & batch support</li><li>Windows + Android apps</li>
+            <li>Browser extension</li><li>Free trial available</li>
+          </ul>
+          <div class="chips"><span class="chip c">Windows</span><span class="chip c">Android</span><span class="chip c">Web</span><span class="chip">Extension</span></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <a href="https://nexgrab.github.io" target="_blank" rel="noopener" class="btn btn-p">Visit NexGrab ↗</a>
+            <a href="#contact" class="btn btn-g" data-project="NexGrab Downloader">Buy License</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Linkora -->
+      <div class="proj reveal">
+        <div class="proj-media">
+          <div class="dual">
+            <div class="phone">
+              <div class="notch"></div>
+              <div class="mrow" style="align-items:center;margin-bottom:14px"><b style="font-family:'Space Grotesk';font-size:1rem;flex:1" class="grad">Linkora</b><span>🔍</span></div>
+              <div class="mcol" style="gap:12px">
+                <div class="mrow" style="align-items:center"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#00e5ff,#7c4dff)"></div><div style="flex:1"><b>Ali</b><div class="lbl">Voice note 🎤 0:14</div></div><span class="lbl">9:41</span></div>
+                <div class="mrow" style="align-items:center"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#ff4ecd,#7c4dff)"></div><div style="flex:1"><b>Office Team</b><div class="lbl">Hamza: Meeting at 5</div></div><span class="lbl">9:20</span></div>
+                <div class="mrow" style="align-items:center"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#25d366,#00e5ff)"></div><div style="flex:1"><b>Usman</b><div class="lbl">📷 View once photo</div></div><span class="lbl">Yest.</span></div>
+                <div class="mrow" style="align-items:center"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#ffbe3c,#ff4ecd)"></div><div style="flex:1"><b>Family</b><div class="lbl">⏱ Disappearing on</div></div><span class="lbl">Mon</span></div>
+              </div>
+            </div>
+            <div class="phone">
+              <div class="notch"></div>
+              <div class="mrow" style="align-items:center;margin-bottom:14px;gap:8px"><div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#00e5ff,#7c4dff)"></div><b style="flex:1">Ali</b><span class="lbl">🔒 E2E</span></div>
+              <div class="bubble in">Salam! Kahan ho?</div>
+              <div class="bubble out">Office mein, 10 min mein free <span class="ticks">✓✓</span></div>
+              <div class="bubble in">🎤 ▶ ━━━━━ 0:14</div>
+              <div class="bubble out">Theek hai, aa raha hoon 👍 <span class="ticks">✓✓</span></div>
+              <div class="bubble in">📎 location.pdf</div>
+              <div class="box mrow" style="margin-top:22px;padding:8px;align-items:center;border-radius:20px"><span class="lbl" style="flex:1">Message…</span><span>🎤</span></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="proj-num">05 / 06</span>
+          <h3>Linkora Messenger</h3>
+          <div class="sub">Chat privately, directly</div>
+          <p class="d">Linkora feels like the messenger you already know, but your messages go straight from one phone to the other. Sign up with your number and you get groups, voice notes, view-once photos and chat lock.</p>
+          <ul class="feat">
+            <li>Peer-to-peer messaging</li><li>Phone-number sign-up</li>
+            <li>Groups with admins</li><li>Voice notes & attachments</li>
+            <li>View once & disappearing</li><li>Chat lock & read ticks</li>
+          </ul>
+          <div class="chips"><span class="chip c">Android</span><span class="chip">Private</span><span class="chip">P2P</span></div>
+          <a href="#contact" class="btn btn-g" data-project="Linkora Messenger">Join the Waitlist →</a>
+        </div>
+      </div>
+
+      <!-- 6. ISP / OLT -->
+      <div class="proj reveal">
+        <div class="proj-media">
+          <div class="win">
+            <div class="win-bar"><i></i><i></i><i></i><span>NexNet · ISP & OLT Manager</span></div>
+            <div class="win-body mrow">
+              <div class="side"><div class="on">📡 Network</div><div>👥 Customers</div><div>💳 Billing</div><div>🔌 OLT / PON</div><div>📦 Stock</div></div>
+              <div class="mcol" style="flex:1">
+                <div class="mrow">
+                  <div class="box" style="flex:1"><div class="lbl">Online ONUs</div><div class="big" style="color:#7df0a8">214</div></div>
+                  <div class="box" style="flex:1"><div class="lbl">Bills Due</div><div class="big" style="color:#ffd27a">18</div></div>
+                  <div class="box" style="flex:1"><div class="lbl">PON Ports</div><div class="big grad">16</div></div>
+                </div>
+                <div class="box mono" style="font-size:.62rem;color:#8ff3ff;line-height:1.7">
+                  <span style="color:var(--muted)">OLT#</span> display ont info 0/1/3 all<br>
+                  ONT 12 · online · -19.8 dBm<br>
+                  ONT 13 · online · -21.2 dBm<br>
+                  <span style="color:#ff7a9c">ONT 14 · offline · LOS</span>
+                </div>
+                <div class="box"><div class="mrow" style="justify-content:space-between;align-items:center"><span>Ahmed · House 24</span><span style="background:rgba(37,211,102,.15);color:#7df0a8;padding:3px 9px;border-radius:6px">Internet ON</span></div></div>
+                <div class="box"><div class="mrow" style="justify-content:space-between;align-items:center"><span>Bilal · House 31</span><span style="background:rgba(255,122,156,.12);color:#ff7a9c;padding:3px 9px;border-radius:6px">Unpaid · OFF</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="proj-num">06 / 06</span>
+          <h3>ISP & OLT Management</h3>
+          <div class="sub">Made by people who do the network work</div>
+          <p class="d">We configure OLTs and run fiber connections ourselves, so we know the daily headaches. Our tools show every connected customer, turn internet off when a bill is unpaid (and back on when it's paid), keep track of FTTH stock and map your fiber network. Need your OLT set up? We do that too.</p>
+          <ul class="feat">
+            <li>OLT configuration service</li><li>Customer & billing control</li>
+            <li>Auto on/off by payment</li><li>FTTH stock management</li>
+            <li>Fiber network documentation</li><li>PC & Android access</li>
+          </ul>
+          <div class="chips"><span class="chip c">Web</span><span class="chip c">Android</span><span class="chip">FTTH</span><span class="chip">GPON / EPON</span></div>
+          <a href="#contact" class="btn btn-g" data-project="ISP & OLT Management">Talk to Us →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="custom" style="padding-top:0">
+  <div class="wrap">
+    <div class="custom-box reveal">
+      <div class="s-head" style="margin-bottom:40px">
+        <span class="tag">// Custom Software</span>
+        <h2>Need something <span class="grad">made just for you?</span></h2>
+        <p>Every business is a little different. If a ready-made app doesn't fit, we'll build one around the way you already work — your items, your bills, your reports, your logo.</p>
+      </div>
+      <div class="custom-grid">
+        <div class="cg"><div class="ic">💊</div><b>Pharmacy POS</b><span>Batches, expiry alerts & stock</span></div>
+        <div class="cg"><div class="ic">🛒</div><b>Grocery / Mart POS</b><span>Barcode billing & inventory</span></div>
+        <div class="cg"><div class="ic">👕</div><b>Retail & Garments</b><span>Sizes, colours & branches</span></div>
+        <div class="cg"><div class="ic">📱</div><b>Mobile & Electronics</b><span>IMEI, warranty & repairs</span></div>
+        <div class="cg"><div class="ic">🏥</div><b>Clinic & Lab</b><span>Patients, tokens & reports</span></div>
+        <div class="cg"><div class="ic">🏭</div><b>Wholesale & Distribution</b><span>Ledgers, orders & dues</span></div>
+        <div class="cg"><div class="ic">📦</div><b>Inventory & Stock</b><span>Multi-warehouse tracking</span></div>
+        <div class="cg"><div class="ic">💡</div><b>Your Own Idea</b><span>Tell us, we'll build it</span></div>
+      </div>
+      <div style="text-align:center;margin-top:36px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="#contact" class="btn btn-p" data-project="Custom POS">Get a Custom POS →</a>
+        <a href="#contact" class="btn btn-g" data-project="Custom Software">Discuss Custom Software</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="process" style="padding-top:20px">
+  <div class="wrap">
+    <div class="s-head reveal">
+      <span class="tag">// How we work</span>
+      <h2>How we'll work <span class="grad">together</span></h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><h4>Discuss</h4><p>Say hello 👋 and tell us how your business runs day to day.</p></div>
+      <div class="step reveal"><h4>Design</h4><p>We sketch the screens and features and go over them with you.</p></div>
+      <div class="step reveal"><h4>Develop</h4><p>We build it and test it, and you see the progress along the way.</p></div>
+      <div class="step reveal"><h4>Deliver</h4><p>We set it up, show your team how it works and stay a call away after that.</p></div>
+    </div>
+    <div class="why" style="margin-top:40px">
+      <div class="reveal"><h4>⚡ Works Offline</h4><p>Internet down? Keep working. Everything syncs once you're back online.</p></div>
+      <div class="reveal"><h4>🔐 Secure by Design</h4><p>Logins, licences and careful code — your data stays yours.</p></div>
+      <div class="reveal"><h4>🇵🇰 Made for Pakistan</h4><p>Urdu support, JazzCash/Easypaisa-friendly and priced for local businesses.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="s-head reveal">
+      <span class="tag">// Contact</span>
+      <h2>Let's <span class="grad">talk</span></h2>
+      <p>Got an idea, a problem or just a question? Drop us a message — a real person reads every one, usually the same day.</p>
+    </div>
+    <div class="contact">
+      <div class="c-info reveal">
+        <a class="c-card" href="https://wa.me/923396258977" target="_blank" rel="noopener">
+          <div class="ic" style="background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.35)"><svg viewBox="0 0 24 24" width="24" height="24" fill="#25d366"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.7.1a8.1 8.1 0 0 1-4-3.5c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6a1.1 1.1 0 0 0-.8.4 3.4 3.4 0 0 0-1 2.5 5.9 5.9 0 0 0 1.2 3.1 13.4 13.4 0 0 0 5.2 4.6c1.9.8 2.7.9 3.6.7a3.1 3.1 0 0 0 2-1.4 2.5 2.5 0 0 0 .2-1.4c-.1-.2-.3-.3-.6-.4zM12 21.8a9.9 9.9 0 0 1-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.9 9.9 0 1 1 12 21.8zm0-21.7A11.8 11.8 0 0 0 1.9 17.9L.2 24l6.3-1.7A11.8 11.8 0 1 0 12 .1z"/></svg></div>
+          <div><small>WhatsApp</small><b>0339 6258977</b></div>
+        </a>
+        <a class="c-card" href="mailto:rskacademy159@gmail.com">
+          <div class="ic" style="background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.3);font-size:1.3rem">✉️</div>
+          <div><small>Email</small><b>rskacademy159@gmail.com</b></div>
+        </a>
+        <a class="c-card" href="tel:+923396258977">
+          <div class="ic" style="background:rgba(124,77,255,.15);border:1px solid rgba(124,77,255,.35);font-size:1.3rem">📞</div>
+          <div><small>Call</small><b>+92 339 6258977</b></div>
+        </a>
+        <div class="c-card">
+          <div class="ic" style="background:rgba(255,78,205,.12);border:1px solid rgba(255,78,205,.3);font-size:1.3rem">📍</div>
+          <div><small>Location</small><b>Gujranwala, Punjab, Pakistan</b></div>
+        </div>
+      </div>
+
+      <form id="cform" class="reveal" novalidate>
+        <h3>Say hello 👋</h3>
+        <p class="note">Fill this in and it opens in WhatsApp or your email — just hit send.</p>
+        <div class="f-row">
+          <div class="field"><label for="fname">Your Name *</label><input id="fname" required placeholder="e.g. Ahmed Khan"></div>
+          <div class="field"><label for="fphone">Phone / WhatsApp</label><input id="fphone" type="tel" placeholder="03xx xxxxxxx"></div>
+        </div>
+        <div class="f-row">
+          <div class="field"><label for="fbiz">Business / Company</label><input id="fbiz" placeholder="e.g. Cheesy Bite"></div>
+          <div class="field"><label for="fproj">Interested In *</label>
+            <select id="fproj" required>
+              <option value="">Select an option</option>
+              <option>FoodDesk Pro</option>
+              <option>School Management</option>
+              <option>WhatsApp Bulk Sender</option>
+              <option>NexGrab Downloader</option>
+              <option>Linkora Messenger</option>
+              <option>ISP & OLT Management</option>
+              <option>Custom POS</option>
+              <option>Custom Software</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label for="fmsg">Message *</label><textarea id="fmsg" required placeholder="Tell us a bit about your business and what you need…"></textarea></div>
+        <div class="f-btns">
+          <button type="button" class="btn btn-wa" id="sendWa">💬 Send on WhatsApp</button>
+          <button type="button" class="btn btn-p" id="sendMail">✉️ Send by Email</button>
+        </div>
+        <div class="f-err" id="ferr"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap f-in">
+    <a href="#top" class="logo" style="font-size:1.1rem">WS<span class="grad">Nex</span></a>
+    <span>© <span id="yr"></span> WSNex · Software House · Gujranwala, Pakistan</span>
+    <div style="display:flex;gap:18px"><a href="#projects">Projects</a><a href="#contact">Contact</a><a href="https://nexgrab.github.io" target="_blank" rel="noopener">NexGrab</a></div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/923396258977?text=Assalam-o-Alaikum%20WSNex!" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.7.1a8.1 8.1 0 0 1-4-3.5c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6a1.1 1.1 0 0 0-.8.4 3.4 3.4 0 0 0-1 2.5 5.9 5.9 0 0 0 1.2 3.1 13.4 13.4 0 0 0 5.2 4.6c1.9.8 2.7.9 3.6.7a3.1 3.1 0 0 0 2-1.4 2.5 2.5 0 0 0 .2-1.4c-.1-.2-.3-.3-.6-.4zM12 21.8a9.9 9.9 0 0 1-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.9 9.9 0 1 1 12 21.8zm0-21.7A11.8 11.8 0 0 0 1.9 17.9L.2 24l6.3-1.7A11.8 11.8 0 1 0 12 .1z"/></svg>
+</a>
+
+<script>
+const WA_NUMBER = "923396258977";
+const EMAIL = "rskacademy159@gmail.com";
+
+document.getElementById("yr").textContent = new Date().getFullYear();
+
+// nav
+const nav = document.getElementById("nav");
+addEventListener("scroll", () => nav.classList.toggle("scrolled", scrollY > 20));
+const links = document.getElementById("links");
+document.getElementById("menuBtn").onclick = () => links.classList.toggle("open");
+links.querySelectorAll("a").forEach(a => a.onclick = () => links.classList.remove("open"));
+
+// typing effect
+const words = ["runs your business", "works offline", "manages your ISP", "serves your restaurant", "runs your school"];
+let wi = 0, ci = words[0].length, del = true;
+const typed = document.getElementById("typed");
+setTimeout(function tick(){
+  const w = words[wi];
+  ci += del ? -1 : 1;
+  typed.textContent = w.slice(0, ci);
+  let wait = del ? 40 : 75;
+  if (!del && ci === w.length){ del = true; wait = 2200; }
+  else if (del && ci === 0){ del = false; wi = (wi + 1) % words.length; wait = 300; }
+  setTimeout(tick, wait);
+}, 2500);
+
+// reveal on scroll
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold:.12});
+document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+// project buttons preselect form
+document.querySelectorAll("[data-project]").forEach(b => b.addEventListener("click", () => {
+  document.getElementById("fproj").value = b.dataset.project;
+}));
+
+// contact form
+function collect(){
+  const v = id => document.getElementById(id).value.trim();
+  const d = { name:v("fname"), phone:v("fphone"), biz:v("fbiz"), proj:v("fproj"), msg:v("fmsg") };
+  const err = document.getElementById("ferr");
+  if (!d.name || !d.proj || !d.msg){ err.textContent = "Please fill your name, what you're interested in, and a message."; return null; }
+  err.textContent = "";
+  return d;
+}
+function body(d){
+  return `Assalam-o-Alaikum WSNex!\n\nName: ${d.name}` +
+    (d.phone ? `\nPhone: ${d.phone}` : "") +
+    (d.biz ? `\nBusiness: ${d.biz}` : "") +
+    `\nInterested in: ${d.proj}\n\nMessage:\n${d.msg}`;
+}
+document.getElementById("sendWa").onclick = () => {
+  const d = collect(); if (!d) return;
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(body(d))}`, "_blank");
+};
+document.getElementById("sendMail").onclick = () => {
+  const d = collect(); if (!d) return;
+  location.href = `mailto:${EMAIL}?subject=${encodeURIComponent("WSNex Inquiry: " + d.proj + " — " + d.name)}&body=${encodeURIComponent(body(d))}`;
+};
+</script>
+</body>
+</html>
